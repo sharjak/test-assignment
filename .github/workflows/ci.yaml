@@ -29,14 +29,12 @@ jobs:
       - name: Grant execute permission for Gradle
         run: chmod +x gradlew
 
-      - name: Force Gradle Refresh
-        run: ./gradlew clean build --refresh-dependencies --no-daemon
-
       - name: Run Liquibase Migration
         run: ./gradlew :liquibase:update --no-daemon
+        working-directory: liquibase
 
       - name: Build Project
-        run: ./gradlew clean build --no-daemon
+        run: ./gradlew clean build -x test --no-daemon
 
   unit-tests:
     name: Run Unit Tests
