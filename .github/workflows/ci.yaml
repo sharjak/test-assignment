@@ -52,7 +52,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Unit Tests
-        run: ./gradlew test --no-daemon --tests="!*IntTest"
+        run: ./gradlew :domain:test --no-daemon
 
   integration-tests:
     name: Run Integration Tests
@@ -74,7 +74,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Integration Tests
-        run: ./gradlew test --no-daemon --tests="*IntTest"
+        run: ./gradlew :integration-test:test --no-daemon
 
   coverage-report:
     name: Generate Coverage Report
