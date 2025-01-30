@@ -43,7 +43,19 @@ subprojects {
         reports {
             html.required.set(true)
             csv.required.set(false)
-            xml.required.set(false)
+            xml.required.set(true)
+        }
+    }
+
+    tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
+        dependsOn("jacocoTestReport")
+
+        violationRules {
+            rule {
+                limit {
+                    minimum = "0.90".toBigDecimal()
+                }
+            }
         }
     }
 
@@ -65,10 +77,14 @@ subprojects {
 tasks.register<JacocoReport>("jacocoRootReport") {
     dependsOn(subprojects.map { it.tasks.named<JacocoReport>("jacocoTestReport") })
 
-    executionData.setFrom(files(subprojects.map { it.layout.buildDirectory.file("jacoco/test.exec") }))
+    executionData.setFrom(
+        fileTree(rootDir) {
+            include("**/build/jacoco/test.exec")
+        }
+    )
 
     additionalClassDirs.setFrom(
-        files(subprojects.map { it.sourceSets["main"].output.classesDirs }).map { dir ->
+        files(subprojects.flatMap { it.sourceSets["main"].output.classesDirs }).map { dir ->
             fileTree(dir) {
                 exclude("**/*MapperImpl.class")
                 exclude("**/LhvTestApplication.class")
@@ -76,12 +92,23 @@ tasks.register<JacocoReport>("jacocoRootReport") {
         }
     )
 
-    additionalSourceDirs.setFrom(files(subprojects.map { it.sourceSets["main"].allSource.srcDirs }))
+    additionalSourceDirs.setFrom(files(subprojects.flatMap { it.sourceSets["main"].allSource.srcDirs }))
 
     reports {
         html.required.set(true)
         csv.required.set(false)
-        xml.required.set(false)
+        xml.required.set(true)
     }
 }
 
+tasks.register<JacocoCoverageVerification>("jacocoRootCoverageVerification") {
+    dependsOn("jacocoRootReport")
+
+    violationRules {
+        rule {
+            limit {
+                minimum = "0.90".toBigDecimal()
+            }
+        }
+    }
+}
