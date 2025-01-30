@@ -1,0 +1,10 @@
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  datasource:
+    url: jdbc:h2:file:./LhvTestDatabase
+    driver-class-name: org.h2.Driver
+    username: lhv_test_user
+    password: lhv_test_password
